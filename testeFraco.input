@@ -1,0 +1,7 @@
+-- Algoritmo do teste fraco de composição
+
+testeFraco(n,b)==
+  if (powmod(b,n-1,n) = 1) then
+    [pseudoprimo]
+  else
+    [composto]

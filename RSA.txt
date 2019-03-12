@@ -1,0 +1,12 @@
+--RSA
+--p é um primo grande
+--q é um primo grande
+--n é p*q
+--fi(n) é (p-1)*(q-1)
+--e é um primo pequeno de ser primo com fi(n)
+--d é (inverso de e) módlo fi(n)
+--codificar é fazer powmod(bloco,e,n)
+--decodificar é fazer powmod(codificado,d,n)
+
+
+

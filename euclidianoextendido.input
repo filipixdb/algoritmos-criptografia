@@ -1,0 +1,15 @@
+-- Algoritmo Euclidiano estendido
+
+EE(a,b)==
+  R1:=a
+  R2:=b
+  xant:=1
+  x:=0
+  while (R2~=0) repeat
+    z := R2
+    R2 := rem(R1, z)
+    temp := x
+    x := (xant - (x*quo(R1, z)))
+    R1 := z
+    xant := temp
+  [xant,(R1-a*xant)/b,R1]

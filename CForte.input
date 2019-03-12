@@ -1,0 +1,30 @@
+-- Teste forte de composição: Retorna false se ele for pseudoprimo forte e true se for indefinido.
+CForte(b,n)==
+   resposta:=true
+   if(even?(n) = true) then
+      resposta:=true
+   else
+   -- Calcula n-1 em potências de 2 x q.
+      k:= 0
+      x:= n-1
+      while (powmod(x,1,2) = 0) repeat
+         x:= quo(x,2)
+         k:= k+1
+      q:= quo(n-1,(2^k))
+      output(k)
+      output(q)
+      r0:=powmod(b,q,n)
+      if(r0=1 or r0=n-1) then
+         resposta:= false
+      else
+         i:=1
+      while(i<k and resposta=true) repeat
+         r:=powmod(r0,2,n)
+         if(r = n-1) then
+            resposta:= false
+         else
+            resposta:= true
+         r0:=r
+         i:=i+1
+   resposta   
+   

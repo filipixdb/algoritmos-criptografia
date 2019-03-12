@@ -1,0 +1,12 @@
+--Algoritmo de Fermat
+
+Fermat(n)==
+
+  x:=WholePart(sqrt(n)::FLOAT)+1
+  y:=sqrt(x^2-n)
+
+  while integer?(y)=FALSE repeat
+   x:=x+1
+   y:=sqrt(x^2-n)
+
+  [x+y,x-y]

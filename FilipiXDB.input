@@ -1,0 +1,149 @@
+--Filipi Xavier Donato Braggio
+--108056022
+
+
+--Algoritmo de Fermat
+fatoracaoFermat(n)==
+  x:= wholePart(sqrt(n)::Float) --primeiro pega a parte inteira da raiz do número
+  y:=sqrt(x^2-n)  -- calcula y segundo a equação: n = (x+y)*(x-y)
+  while integer?(y)=false repeat --incrementa x até encontrar um valor inteiro para y
+    x:=x+1
+    y:=sqrt((x^2)-n)
+  [x+y,x-y] --retorna os fatores
+
+
+
+-- Algoritmo Euclidiano estendido
+EE(a,b)==
+  R1:=a --começa o teste pegando os valores dos números dados
+  R2:=b
+  xant:=1 --preenche a tabela dos valores de x, sendo o anterior 1, e o atual 0
+  x:=0
+  while (R2~=0) repeat --como r2 será o resto da divisão de r1 por r2, esta linha significa "enquanto r1 e r2 não forem divisíveis um pelo outro..."
+    z := R2
+    R2 := rem(R1, z)
+    temp := x
+    x := (xant - (x*quo(R1, z))) --após dividir, preenche a tabela do x
+    R1 := z
+    xant := temp
+  [xant,(R1-a*xant)/b,R1] --retorna x e y referentes ao divisor comum
+
+
+
+
+-- Algoritmo do teste forte de composição
+testeForte(n,b)==
+  resposta:= 0
+  k:= 0
+  q:= n-1
+  while (quo(q,2) ~= 0) repeat --acha a multiplicidade de 2 em n-1, que será k
+    q:= quo(q,2)
+    k:= k+1
+  i:= 0
+  r:= powmod(b,2^i*q,n) --faz o teste b elevado a (2^k)*q, módulo n, para k = 0. retorna inconclusivo caso resulte 1
+  if (r=1) then
+    resposta:= 1
+  else
+    i:= i+1
+    r:= powmod(b,2^i*q,n)
+    while (i<k) repeat  --no caso de nao retornar inconclusivo quando k=0, devemos testar para todos os k`s
+      if (r = n-1) then  --agora se for congruente a -1 retorna inconclusivo
+        resposta:= 1
+      else
+        r:= powmod(b,2^i*q,n) --continua testando para os próximos k`s
+      i:= i+1
+  if (resposta=1) then
+    [inconclusivo]
+  else
+    [composto]
+
+
+
+
+-- Algoritmo do teste fraco de composição
+testeFraco(n,b)==
+  resultado:= powmod(b,n-1,n) -- se uma base é congruente a si mesmo em módulo n, então n é pseudoprimo para esta base
+  if (resultado = 1) then
+    [pseudoprimo]
+  else
+    [composto]
+
+
+
+-- RSA -----------------------------------------------
+
+--gera-se uma lista com p,q,n,fi(n),e,d
+geraChave(tamanho)==
+  p:=nextPrime(6*10^tamanho)
+  q:=nextPrime(p+74683748989)
+  n:=p*q
+  fi:=(p-1)*(q-1)
+  e:=3  --define um valor inicial para e, primo e pequeno
+  while gcd(e,fi)~=1 repeat  -- e e fi(n) devem ser primos entre si
+    e:=nextPrime(e)
+  d:=invmod(e,fi)  -- d é o inverso de e, módulo fi(n)
+  Lista:= [p,q,n,fi,e,d]
+  Lista
+
+
+--Criptografar lista de caracteres
+codifica(entrada,chave)==
+  i:=1
+  saida:=[]
+  while i<= #entrada repeat  --percorre todos os elementos da lista
+    x:=(ord(entrada.i)-55)  --atribui um valor inteiro de acordo com o caracter, ex: A => 10
+    x:=powmod(x,chave.5,chave.3)  --para codificar um bloco, faz-se o valor inteiro elevado a e, módulo n
+    saida:=concat(saida, x)
+    i:=i+1
+  saida
+
+--Decodificar blocos
+decodifica(entrada,chave)==
+  saida:=[]
+  i:=1
+  while i<= #entrada repeat  -- percorre toda a lista
+    x:=powmod(entrada.i,chave.6,chave.3) --faz o valor do bloco elevado a d, módulo n
+    caracter:=char(x+55)  --passa o valor obtido para caracter de acordo com a correspondência: A => 10
+    saida:=concat(saida, caracter)
+    i:=i+1
+  saida
+
+--------------------------------------------------------
+
+
+multiplica(elementoA,elementoB,n,d)==  --multiplicação em Zn raiz de d
+  res1:=elementoA.1*elementoB.2 + elementoA.2*elementoB.1 --deve-se calcular o resíduo de (a1*b2)+(a2*b1)
+  res1:=powmod(res1,1,n)
+  
+  res2:=elementoA.1*elementoB.1 + elementoA.2*elementoB.2*d --deve-se calcular o resíduo de (a1*b1)+(a2*b2)*d
+  res2:=powmod(res2,1,n)
+  [r1,r2]
+
+
+potencia(a,k,n,d)==
+  aux:=a
+  i:=1::Integer
+  while (i<k) repeat  --multiplica aux por a quantas vezes for o k
+    aux:=multiplica(aux,a,n,d)
+    i:=i+1
+
+  [aux]
+
+  
+ordem(elemento,n,d)==
+  aux :=[elemento.1,elemento.2]
+  exp:=1
+  while (aux~=[1,0])repeat --faz aux = elemento e depois, aux^k até que seja congruente a 1
+    exp:=k+1
+    aux:=multiplica(aux,elemento,n,d)
+  [k]
+
+
+
+
+--Consultei o livro-texto usado no curso, e os arquivos pdf das aulas de laboratório.
+--Além disso busquei na internet instruções sobre a sintaxe do Axiom, porém não registrei as páginas visitadas.
+--Encontrei como principais dificuldades o fato de não me habituar à sintaxe do Axiom, devido ao pouco uso durante a semana,
+--e também a certa incompatibilidade de certos arquivos editados em ambiente linux e abertos em windows.
+--Acredito que poderia ter feito um trabalho melhor caso aprendesse mais sobre a sintaxe do Axiom, gostaria por exemplo de transformar 
+--uma cadeia de caracteres em uma lista de caracteres e assim fazer o RSA de forma mais ágil.

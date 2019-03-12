@@ -1,0 +1,140 @@
+--Filipi Xavier Donato Braggio
+--108056022
+
+
+
+
+--Algoritmo de Fermat
+fatoracaoFermat(n)==
+  x:= wholePart(sqrt(n)::Float)
+  y:=sqrt(x^2-n)
+  while integer?(y)=false repeat
+    x:=x+1
+    y:=sqrt((x^2)-n)::Float
+  [wholePart(x+y),wholePart(x-y)]
+
+
+
+
+--Algoritmo Euclidiano estendido
+euclidianoExtendido(a,b)==
+  R1:=a
+  R2:=b
+  xant:=1
+  x:=0
+  while (R2~=0) repeat
+    z := R2
+    R2 := rem(R1, z)
+    temp := x
+    x := (xant-(x*quo(R1, z)))
+    R1 := z::Integer
+    xant := temp::Float
+  [xant,((R1-a*xant)/b)::Float,R1::Integer]
+
+
+
+
+-- Teste forte de composição: Retorna false se ele for pseudoprimo forte e true se for indefinido.
+testeForte(base,n)==
+  resultado:=true
+  if(even?(n)=true) then --testa se o n é par
+    resposta:=true
+  else --se não for par deve calcular o k e o q
+    k:= 0
+    exp:= n-1
+    while (mod(exp,2) = 0) repeat --enquanto for par, agente divide por 2 e aumenta o k
+      k:= k+1
+      exp:= quo(exp,2)
+    q:= quo(n-1,(2^k)) --q completa a expressão: n-1 = 2^k*q
+    resto:=powmod(base,q,n) --base^(2^k*q) para k=0, módulo n
+    if(resto=1 or resto=n-1) then
+      resposta:= false
+    else
+      cont:=1
+    while(i<k and resposta=true) repeat --repete para todos os k`s, enquanto não encontra indefinição
+      resto2:=powmod(resto,2,n) --elevar ao quadrado é o mesmo que incrementar o k. Desta maneira há poupança de processamento
+      if(resto2 = n-1) then --procura inconclusao
+        resposta:= false
+      else
+        resposta:= true
+      resto:=resto2
+      cont:=i+1
+  resposta
+
+
+
+
+-- Algoritmo do teste fraco de composição
+testeFraco(n,b)==
+  resultado:= powmod(b,n-1,n)::Integer
+  if (resultado = 1) then
+    [pseudoprimo]
+  else
+    [composto]
+
+
+--Gera a chave a ser utilizada
+geraChave(tamanho)==
+  p:=nextPrime(6*10^tamanho)
+  q:=nextPrime(p+74683748989)
+  n:=p*q
+  fi:=(p-1)*(q-1)
+  e:=3
+  while gcd(e,fi)~=1 repeat
+    e:=nextPrime(e)
+  d:=invmod(e,fi)
+  Lista:= [p,q,n,fi,e,d]
+  Lista
+
+
+--Criptografar lista de caracteres
+codifica(entrada,chave)==
+  i:=1
+  saida:=[]
+  while i<= #entrada repeat
+    x:=(ord(entrada.i)-55)
+    x:=powmod(x,chave.5,chave.3)
+    saida:=concat(saida, x)
+    i:=i+1
+  saida
+
+--Descriptografar lista de inteiros
+decodifica(entrada,chave)==
+  saida:=[]
+  i:=1
+  while i<= #entrada repeat
+    x:=powmod(entrada.i,chave.6,chave.3)
+    caracter:=char(x+55)
+    saida:=concat(saida, caracter)
+    i:=i+1
+  saida
+
+
+
+
+multiplica(a,b,n,d)==
+  temp := [a.1,a.2]
+  temp2 := [b.1,b.2]
+  r1 := temp.1*temp2.1 + temp.2*temp2.2*d
+  r2 := temp.1*temp2.2 + temp.2*temp2.1
+  r1 := powmod(r1,1,n)
+  r2 := powmod(r2,1,n)
+  [r1,r2]
+
+
+potencia(a,k,n,d)==
+  temp := a
+  i:=1
+  while i<k repeat
+    temp := multiplica(temp,a,n,d)
+    i:=i+1
+  [temp]
+
+  
+ordem(a,n,d)==
+  temp := [a.1,a.2]
+  k := 1
+  while temp~=[1,0] repeat
+    k := k+1
+    temp := multiplica(temp,a,n,d)
+  [k]

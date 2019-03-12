@@ -1,0 +1,12 @@
+--Gera a chave a ser utilizada
+
+geraChave(tamanho)==
+p:=nextPrime(6*10^tamanho)
+q:=nextPrime(p+7468374563876989)
+n:=p*q
+fi:=(p-1)*(q-1)
+e:=3
+while gcd(e,fi)~=1 repeat
+  e:=nextPrime(e)
+d:=invmod(e,fi)
+[p,q,n,fi,e,d]

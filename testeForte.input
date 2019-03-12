@@ -1,0 +1,26 @@
+-- Algoritmo do teste forte de composição
+
+testeForte(n,b)==
+  resposta:= 0
+  k:= 0
+  q:= n-1
+  while (quo(q,2) ~= 0) repeat
+    q:= quo(q,2)
+    k:= k+1
+  i:= 0
+  r:= powmod(b,2^i*q,n)
+  if (r=1) then
+    resposta:= 1
+  else
+    i:= i+1
+    r:= powmod(b,2^i*q,n)
+    while (i<k) repeat
+      if (r = n-1) then
+        resposta:= 1
+      else
+        r:= powmod(b,2^i*q,n)
+      i:= i+1
+  if (resposta=1) then
+    [inconclusivo]
+  else
+    [composto]

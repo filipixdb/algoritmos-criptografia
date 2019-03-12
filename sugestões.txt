@@ -1,0 +1,16 @@
+﻿Sugestões:
+
+
+> teste de composição fraco
+
+
+> teste de composição forte
+
+
+> programa para encontrar o menor pseudoprimo para todas as bases de uma lista L dada
+
+
+> programa para achar o menor pseudoprimo forte para todas as bases de uma lista L dada
+
+
+//lembrar que para ser pseudoprimo o numero deve ser composto e ímpar
